@@ -1,4 +1,4 @@
 build:
-	docker build -t="ted/ruby-2.1.0" .
+	docker build -t="ted/ruby" .
 
 .PHONY: build
