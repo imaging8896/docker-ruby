@@ -19,21 +19,38 @@ RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
 RUN echo '[[ -s "/usr/local/rvm/bin/rvm" ]] && source "/usr/local/rvm/bin/rvm" > /dev/null' >> ~/.bashrc
 
 # install rubyGem
-RUN apt-get install rubygems -y
+RUN /bin/bash -l -c 'rvm rubygems latest'
+
+# install bundle
+RUN /bin/bash -l -c 'gem install bundle'
 
 # remove ssh config echo additional '-e' 
 RUN sed -i -- 's/-e//g' /etc/ssh/ssh_config
 
 # install ruby 2.3.3
-
-RUN /bin/bash -l -c 'rvm install 2.3.3 && rvm use 2.3.3'
-
+RUN /bin/bash -l -c 'rvm install 2.3.3'
 RUN /bin/bash -l -c 'rvm --default use 2.3.3'
-RUN ruby -v
-ENV PATH=$PATH:/usr/local/rvm/bin
-RUN apt-get install -y ruby-dev
 
 # pre-install gem
 ADD Gemfile /
-RUN gem install bundle
-RUN bundle install
+RUN /bin/bash -l -c 'gem install bundler'
+RUN /bin/bash -l -c 'bundle install'
+
+# Android fo carabash
+RUN apt-get install wget unzip -y
+RUN apt-get install -y software-properties-common && \
+	add-apt-repository -y ppa:webupd8team/java && \
+	(echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections) && \
+	apt-get update && \
+	apt-get install -y oracle-java8-installer
+ENV JAVA_OPTS="-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8"
+RUN cd /opt && \
+	mkdir android_sdk && \
+	cd android_sdk && \
+	wget --output-document=tools.zip --quiet https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip && \
+	unzip tools.zip && \
+	rm -f tools.zip && \
+	chown -R root.root tools && \
+	echo y | yes | ./tools/bin/sdkmanager "platforms;android-25" "platform-tools" "build-tools;25.0.3"	
+
+ENV ANDROID_HOME=/opt/android_sdk
