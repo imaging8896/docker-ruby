@@ -2,12 +2,10 @@ FROM ubuntu:16.04
 
 RUN apt-get update
 
-RUN apt-get install git -y
-
-RUN apt-get install curl
+RUN apt-get install -y curl
 
 # install rvm Ruby stable
-RUN curl -sSL https://get.rvm.io | bash -s stable --ruby
+RUN  curl -sSL https://get.rvm.io | grep -v __rvm_print_headline | bash -s stable --ruby
 
 RUN echo '[[ -s "/usr/local/rvm/bin/rvm" ]] && source "/usr/local/rvm/bin/rvm" > /dev/null' >> ~/.bashrc
 
