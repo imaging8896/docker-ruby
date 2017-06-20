@@ -1,4 +1,4 @@
 build:
-	docker build -t="ted/ruby" .
+	docker build  --no-cache=true -t="ted/ruby" .
 
 .PHONY: build
