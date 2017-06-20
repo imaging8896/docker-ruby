@@ -4,13 +4,6 @@ RUN apt-get update
 
 RUN apt-get install git -y
 
-# Copy over private key, and set permissions
-ADD repo-key /
-
-RUN chmod 600 /repo-key && \  
-  echo "IdentityFile /repo-key" >> /etc/ssh/ssh_config && \  
-  echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config   
-
 RUN apt-get install curl
 
 # install rvm Ruby stable
@@ -23,9 +16,6 @@ RUN /bin/bash -l -c 'rvm rubygems latest'
 
 # install bundle
 RUN /bin/bash -l -c 'gem install bundle'
-
-# remove ssh config echo additional '-e' 
-RUN sed -i -- 's/-e//g' /etc/ssh/ssh_config
 
 # install ruby 2.3.3
 RUN /bin/bash -l -c 'rvm install 2.3.3'
