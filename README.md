@@ -4,5 +4,5 @@
 - Android tools and platform-tools support
 - Only support selenium remote driver
 
-# Steps
+# Usage
 docker run -i -t -v $(pwd):/root -w /root  tedimaging/ruby /bin/bash -l -c 'bundle update && bundle install && cucumber features/XXX.feature' 
